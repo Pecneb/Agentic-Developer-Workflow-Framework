@@ -21,3 +21,7 @@ repo.
 - Relevant docs
 - Initial subsystem map
 - Risks or unknowns
+
+## Optional CodeGraph Check
+
+During initial onboarding, determine whether a CodeGraph index is already present and usable; if it is, use `codegraph_explore` to survey the application architecture and important flows. **Do not install CodeGraph or run `codegraph init` automatically** just because it is missing. Mention indexing as an optional developer setup step and otherwise use the normal README, manifest, file search, and targeted reads. See [the code-intelligence policy](../policies/code-intelligence.md).

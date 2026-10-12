@@ -38,3 +38,7 @@
 - Never treat graph relationships as proof of
   runtime behavior.
 - If CodeGraph is unavailable, use native tools.
+
+## Optional Code Intelligence
+
+For cross-file code relationships or initial blast-radius exploration, use CodeGraph's `codegraph_explore` when it is available and the repository is indexed. Do not use it for every lookup: exact strings, documentation, configuration, and unsupported code remain good fits for `rg`, glob, and targeted reads. Do not block work if CodeGraph is unavailable. Follow [the code-intelligence policy](code-intelligence.md) for freshness checks, generated-index handling, and limits of graph analysis.
