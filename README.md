@@ -85,6 +85,36 @@ rewritten in project-owned language under
 - `rigorous.md`: onboarding, risky refactors, audits, security-sensitive work,
   and anything with a broad blast radius
 
+## Optional CodeGraph Integration
+
+[CodeGraph](https://github.com/colbymchenry/codegraph) is an optional, local code-intelligence layer for agents such as Claude Code and Codex. It indexes symbols, imports, and call relationships so an agent can explore execution paths and likely change impact before editing. **This framework still works without CodeGraph.** The framework controls *how* agents work; CodeGraph helps them locate relevant code. Neither CodeGraph nor its index replaces `PROJECT_STATE.md`, workflow rules, or test evidence.
+
+### Quick start (Claude Code + Codex)
+
+Run this against an actual **code project** where you copied the framework (indexing this documentation-only template is usually unnecessary):
+
+```bash
+# Once per development machine; requires npm
+npm install -g @colbymchenry/codegraph
+
+# Optional privacy setting: disable anonymous usage telemetry
+codegraph telemetry off
+
+# Once per machine: register the MCP server for both agents
+codegraph install --target=claude,codex --location=global
+
+# Once per code repository: build its local index
+cd /path/to/your-project
+codegraph init
+codegraph status
+```
+
+Restart Claude Code/Codex after registering the MCP server. The installer can update agent MCP settings and insert marked instructions into `AGENTS.md` / `CLAUDE.md`; **review any changes before committing**, especially where the framework already supplies these files. Keep generated `.codegraph/` (and `.codegraph-wsl/` when relevant) out of version control by adding them to the target repository's `.gitignore`.
+
+Use the available MCP `codegraph_explore` tool for structural questions (or `codegraph explore "How does authentication reach the database?"` from a terminal). Use native search and targeted reads for exact strings, configs, docs, unsupported code, and when no index exists. The graph is a navigation aid, **not a substitute for checking actual behavior or running tests**.
+
+See [the setup guide](agent-setup-guide.md#optional-codegraph-setup) and [the code-intelligence policy](.agents/policies/code-intelligence.md) for detailed commands, failure modes, and workflow usage.
+
 ## Installing Into a Repo
 
 1. Copy `CLAUDE.md`, `AGENTS.md`, and the entire `.agents/` directory into the

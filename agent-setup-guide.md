@@ -160,3 +160,60 @@ This framework may be informed by public prompt repositories, but the content in
 the installed files should remain vendor-neutral and project-owned. Do not paste
 extracted vendor system prompts into the target repo. The governing rule is in
 [`prompt-source-policy.md`](.agents/policies/prompt-source-policy.md).
+
+## Optional CodeGraph Setup
+
+CodeGraph augments this framework's tool-use policy with local source-code structure and MCP retrieval. It is **optional**: only configure it where it actually helps with a codebase, not necessarily in this documentation template. See the [upstream CodeGraph README](https://github.com/colbymchenry/codegraph) for current installation choices and platform support.
+
+### Install and connect your agent
+
+```bash
+# Prerequisite: npm installed (alternatively use the upstream standalone installer)
+npm install -g @colbymchenry/codegraph
+codegraph telemetry off  # optional: opt out of anonymous usage metrics
+
+# Register globally for Claude Code and Codex (once per machine)
+codegraph install --target=claude,codex --location=global
+```
+
+The `install` step registers the MCP server; **it does not index the current project**. Restart both agents to load the MCP connection. Review any changes made to global agent settings, permission allowlists, and marked instruction blocks. The installer may also write instructions to `CLAUDE.md` or `AGENTS.md`; do not overwrite this framework's short router files with installer output.
+
+If global agent integration is not desired, run the interactive `codegraph install` and choose a project-local configuration, or inspect `codegraph install --print-config codex` to wire it manually. Avoid storing machine-specific paths or permissions in the framework template.
+
+### Initialize each target repository
+
+```bash
+cd /path/to/your-application-repository
+codegraph init
+codegraph status
+```
+
+Add these patterns to the **application repository's** `.gitignore` (not to `PROJECT_STATE.md`):
+
+```gitignore
+.codegraph/
+.codegraph-wsl/
+```
+
+The `.codegraph/` directory is a generated local index; it is not durable project memory. CodeGraph normally syncs while its MCP server is running. If results seem out of date, check `codegraph status`, then use `codegraph sync` as needed. Check the staleness information in graph results after edits.
+
+### Use in day-to-day work
+
+```bash
+# Terminal alternatives when the MCP tool is unavailable
+codegraph explore "Trace this API endpoint through handlers and services"
+codegraph impact MyChangedFunction
+codegraph affected src/service.ts
+```
+
+For MCP agents, `codegraph_explore` is the default exposed tool. CLI commands such as `impact`, `callers`, `callees`, and `affected` are available separately, but do not assume all are exposed as independent MCP tools. Ask structural questions first, verify uncertain findings against the code or runtime where appropriate, and run the repository's actual tests. For exact text, configuration, SQL migrations, or unsupported languages, keep using `rg`, glob, and focused file reads.
+
+The canonical behavioral instructions live in [`.agents/policies/code-intelligence.md`](.agents/policies/code-intelligence.md). The Explorer role, onboarding workflow, nontrivial-change workflow, and Reviewer role reference that policy instead of duplicating it.
+
+### Troubleshooting / removal
+
+- `codegraph` not found: confirm the CLI is on `PATH` or reopen the terminal.
+- No CodeGraph tool in Claude/Codex: check the MCP registration, restart the agent, and try `codegraph install` again after reviewing settings.
+- No project graph: run `codegraph init` inside the **target application repository** and check `codegraph status`.
+- Suspicious or incomplete results: run `codegraph sync`, inspect changed files directly, and fall back to native tools.
+- To stop indexing a project: `codegraph uninit` (review its prompt). To unregister CodeGraph from agents while retaining the CLI: `codegraph uninstall --keep-cli`. Read the tool's confirmation before changing global configuration.

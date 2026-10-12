@@ -16,3 +16,7 @@ Explorer -> Planner -> approval -> Implementer -> Verifier -> final report
 5. Verifier runs the targeted checks.
 6. Repeat for the next approved step when necessary.
 7. Finish with an outcome report under `.agents/policies/outcome-reporting.md`.
+
+## Optional Graph-Based Impact Check
+
+Before implementing cross-file changes, use an available indexed CodeGraph project to identify likely callers, dependent modules, and candidate tests. Use `codegraph_explore` through MCP, or CLI commands such as `codegraph impact <symbol>` and `codegraph affected <changed-file>` as appropriate. Explicitly mark results as *candidates*; verify behavior, configuration paths, dynamic dispatch, and test coverage with source review and actual tests. Continue without CodeGraph when absent. See [the code-intelligence policy](../policies/code-intelligence.md).

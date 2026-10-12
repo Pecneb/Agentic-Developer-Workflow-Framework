@@ -19,3 +19,7 @@ Read-only repository discovery.
 - Observed facts
 - Inferred conclusions
 - Recommended next files
+
+## Optional CodeGraph-Assisted Exploration
+
+For an indexed repository, use `codegraph_explore` (or `codegraph explore` via CLI) to map symbols, call paths, and affected modules before doing broad file-by-file exploration. Prefer direct searches/reads for precise text, configuration, and graph gaps. Return grounded file/symbol references and make uncertainty explicit; do not present the graph as complete runtime proof. Follow [the code-intelligence policy](../policies/code-intelligence.md). If unavailable, continue with normal repository tools.
