@@ -25,3 +25,16 @@
 - Use the lightest tool that fits the task.
 - Keep tool output summarized unless raw output is necessary to explain a risk.
 - Verify file paths and command scope before running state-changing commands.
+
+## Code Intelligence
+- When CodeGraph is available and the repository is
+  indexed, prefer it for structural exploration,
+  call chains, dependencies, and impact analysis.
+- Use targeted file reads for source verification
+  before modifying behavior.
+- Use rg/glob for exact strings, configuration,
+  documentation, and cases CodeGraph cannot resolve.
+- Check graph freshness when recent changes matter.
+- Never treat graph relationships as proof of
+  runtime behavior.
+- If CodeGraph is unavailable, use native tools.
